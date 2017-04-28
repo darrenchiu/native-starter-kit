@@ -47,7 +47,7 @@ class Login extends Component {
                     secureTextEntry
                   />
                 </Item>
-                <Button style={styles.btn} onPress={() => Actions.home()}>
+                <Button style={styles.btn} onPress={() => Actions.tabbar()}>
                   <Text>Login</Text>
                 </Button>
               </View>

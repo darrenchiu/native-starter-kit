@@ -1,6 +1,6 @@
 
 import React, { Component } from 'react';
-import { StatusBar } from 'react-native';
+import { StyleSheet, StatusBar, Text} from 'react-native';
 import { connect } from 'react-redux';
 import { Drawer } from 'native-base';
 import { Router, Scene } from 'react-native-router-flux';
@@ -12,9 +12,24 @@ import Home from './components/home/';
 import BlankPage from './components/blankPage';
 import SideBar from './components/sideBar';
 import { statusBarColor } from './themes/base-theme';
+import NavigationDrawer from './NavigationDrawer';
+import TabIcon from './TabIcon';
+import TabView from './TabView';
 
 
 const RouterWithRedux = connect()(Router);
+
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: 'transparent', justifyContent: 'center',
+    alignItems: 'center',
+  },
+  tabBarStyle: {
+    backgroundColor: '#eee',
+  },
+  tabBarSelectedItemStyle: {
+    backgroundColor: '#ddd',
+  },
+});
 
 class AppNavigator extends Component {
 
@@ -96,6 +111,58 @@ class AppNavigator extends Component {
             <Scene key="login" component={Login} hideNavBar initial />
             <Scene key="home" component={Home} />
             <Scene key="blankPage" component={BlankPage} />
+            <Scene key="tabbar" component={NavigationDrawer}>
+              <Scene
+                key="main"
+                tabs
+                tabBarStyle={styles.tabBarStyle}
+                tabBarSelectedItemStyle={styles.tabBarSelectedItemStyle}
+              >
+                <Scene
+                  key="tab1"
+                  title="Tab #1"
+                  icon={TabIcon}
+                  navigationBarStyle={{ backgroundColor: 'red' }}
+                  titleStyle={{ color: 'white' }}
+                >
+                  <Scene
+                    key="tab1_1"
+                    component={TabView}
+                    title="Tab #1_1"
+                    onRight={() => alert('Right button')}
+                    rightTitle="Right"
+                  />
+                  <Scene
+                    key="tab1_2"
+                    component={TabView}
+                    title="Tab #1_2"
+                    titleStyle={{ color: 'black' }}
+                  />
+                </Scene>
+                <Scene key="tab2" initial title="Tab #2" icon={TabIcon}>
+                  <Scene
+                    key="tab2_1"
+                    component={TabView}
+                    title="Tab #2_1"
+                    renderRightButton={() => <Text>Right</Text>}
+                  />
+                  <Scene
+                    key="tab2_2"
+                    component={TabView}
+                    title="Tab #2_2"
+                    hideBackImage
+                    onBack={() => alert('Left button!')}
+                    backTitle="Left"
+                    duration={1}
+                    panHandlers={null}
+                  />
+                </Scene>
+                <Scene key="tab3" component={TabView} title="Tab #3" hideTabBar icon={TabIcon} />
+                <Scene key="tab4" component={TabView} title="Tab #4" hideNavBar icon={TabIcon} />
+                <Scene key="tab5" component={TabView} title="Tab #5" hideTabBar icon={TabIcon} />
+              </Scene>
+            </Scene>
+
           </Scene>
         </RouterWithRedux>
       </Drawer>
