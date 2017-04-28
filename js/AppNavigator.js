@@ -51,8 +51,6 @@ class AppNavigator extends Component {
       <RouterWithRedux>
         <Scene key="root">
           <Scene key="login" component={Login} hideNavBar hideTabBar initial />
-          <Scene key="home" component={Home} />
-          <Scene key="blankPage" component={BlankPage} />
           <Scene key="tabbar" component={NavigationDrawer}>
             <Scene
               key="main"
@@ -64,8 +62,8 @@ class AppNavigator extends Component {
                 key="tab1"
                 title="Tab #1"
                 icon={TabIcon}
-                navigationBarStyle={{backgroundColor: 'red'}}
-                titleStyle={{color: 'white'}}
+                navigationBarStyle={{ backgroundColor: 'red' }}
+                titleStyle={{ color: 'white' }}
               >
                 <Scene
                   key="tab1_1"
@@ -75,10 +73,10 @@ class AppNavigator extends Component {
                   rightTitle="Right"
                 />
                 <Scene
-                  key="tab1_2"
+                  key="blankPage"
                   component={BlankPage}
                   title="Tab #1_2"
-                  titleStyle={{color: 'black'}}
+                  titleStyle={{ color: 'black' }}
                 />
               </Scene>
               <Scene key="tab2" initial title="Tab #2" icon={TabIcon}>
