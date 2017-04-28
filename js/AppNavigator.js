@@ -1,26 +1,24 @@
-
 import React, { Component } from 'react';
-import { StyleSheet, StatusBar, Text} from 'react-native';
+import { StyleSheet, StatusBar, Text, View } from 'react-native';
 import { connect } from 'react-redux';
-import { Drawer } from 'native-base';
 import { Router, Scene } from 'react-native-router-flux';
 
-import { closeDrawer } from './actions/drawer';
 
 import Login from './components/login/';
 import Home from './components/home/';
 import BlankPage from './components/blankPage';
-import SideBar from './components/sideBar';
 import { statusBarColor } from './themes/base-theme';
 import NavigationDrawer from './NavigationDrawer';
 import TabIcon from './TabIcon';
 import TabView from './TabView';
 
-
 const RouterWithRedux = connect()(Router);
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: 'transparent', justifyContent: 'center',
+  container: {
+    flex: 1,
+    backgroundColor: 'transparent',
+    justifyContent: 'center',
     alignItems: 'center',
   },
   tabBarStyle: {
@@ -33,34 +31,7 @@ const styles = StyleSheet.create({
 
 class AppNavigator extends Component {
 
-  static propTypes = {
-    drawerState: React.PropTypes.string,
-    closeDrawer: React.PropTypes.func,
-  }
-
-
-  componentDidUpdate() {
-    if (this.props.drawerState === 'opened') {
-      this.openDrawer();
-    }
-
-    if (this.props.drawerState === 'closed') {
-      this._drawer._root.close();
-    }
-  }
-
-
-  openDrawer() {
-    this._drawer._root.open();
-  }
-
-  closeDrawer() {
-    if (this.props.drawerState === 'opened') {
-      this.props.closeDrawer();
-    }
-  }
-
-  _renderScene(props) { // eslint-disable-line class-methods-use-this
+  _renderScene (props) { // eslint-disable-line class-methods-use-this
     switch (props.scene.route.key) {
       case 'login':
         return <Login />;
@@ -68,6 +39,8 @@ class AppNavigator extends Component {
         return <Home />;
       case 'blankPage':
         return <BlankPage />;
+      case 'tabbar':
+        return <NavigationDrawer />;
       default :
         return <Login />;
     }
@@ -75,102 +48,67 @@ class AppNavigator extends Component {
 
   render() {
     return (
-      <Drawer
-        ref={(ref) => { this._drawer = ref; }}
-        type="overlay"
-        tweenDuration={150}
-        content={<SideBar />}
-        tapToClose
-        acceptPan={false}
-        onClose={() => this.closeDrawer()}
-        openDrawerOffset={0.2}
-        panCloseMask={0.2}
-        styles={{
-          drawer: {
-            shadowColor: '#000000',
-            shadowOpacity: 0.8,
-            shadowRadius: 3,
-          },
-        }}
-        tweenHandler={(ratio) => {  //eslint-disable-line
-          return {
-            drawer: { shadowRadius: ratio < 0.2 ? ratio * 5 * 5 : 5 },
-            main: {
-              opacity: (2 - ratio) / 2,
-            },
-          };
-        }}
-        negotiatePan
-      >
-        <StatusBar
-          backgroundColor={statusBarColor}
-          barStyle="default"
-        />
-        <RouterWithRedux>
-          <Scene key="root">
-            <Scene key="login" component={Login} hideNavBar initial />
-            <Scene key="home" component={Home} />
-            <Scene key="blankPage" component={BlankPage} />
-            <Scene key="tabbar" component={NavigationDrawer}>
+      <RouterWithRedux>
+        <Scene key="root">
+          <Scene key="login" component={Login} hideNavBar hideTabBar initial />
+          <Scene key="home" component={Home} />
+          <Scene key="blankPage" component={BlankPage} />
+          <Scene key="tabbar" component={NavigationDrawer}>
+            <Scene
+              key="main"
+              tabs
+              tabBarStyle={styles.tabBarStyle}
+              tabBarSelectedItemStyle={styles.tabBarSelectedItemStyle}
+            >
               <Scene
-                key="main"
-                tabs
-                tabBarStyle={styles.tabBarStyle}
-                tabBarSelectedItemStyle={styles.tabBarSelectedItemStyle}
+                key="tab1"
+                title="Tab #1"
+                icon={TabIcon}
+                navigationBarStyle={{backgroundColor: 'red'}}
+                titleStyle={{color: 'white'}}
               >
                 <Scene
-                  key="tab1"
-                  title="Tab #1"
-                  icon={TabIcon}
-                  navigationBarStyle={{ backgroundColor: 'red' }}
-                  titleStyle={{ color: 'white' }}
-                >
-                  <Scene
-                    key="tab1_1"
-                    component={TabView}
-                    title="Tab #1_1"
-                    onRight={() => alert('Right button')}
-                    rightTitle="Right"
-                  />
-                  <Scene
-                    key="tab1_2"
-                    component={TabView}
-                    title="Tab #1_2"
-                    titleStyle={{ color: 'black' }}
-                  />
-                </Scene>
-                <Scene key="tab2" initial title="Tab #2" icon={TabIcon}>
-                  <Scene
-                    key="tab2_1"
-                    component={TabView}
-                    title="Tab #2_1"
-                    renderRightButton={() => <Text>Right</Text>}
-                  />
-                  <Scene
-                    key="tab2_2"
-                    component={TabView}
-                    title="Tab #2_2"
-                    hideBackImage
-                    onBack={() => alert('Left button!')}
-                    backTitle="Left"
-                    duration={1}
-                    panHandlers={null}
-                  />
-                </Scene>
-                <Scene key="tab3" component={TabView} title="Tab #3" hideTabBar icon={TabIcon} />
-                <Scene key="tab4" component={TabView} title="Tab #4" hideNavBar icon={TabIcon} />
-                <Scene key="tab5" component={TabView} title="Tab #5" hideTabBar icon={TabIcon} />
+                  key="tab1_1"
+                  component={Home}
+                  title="Tab #1_1"
+                  onRight={() => alert('Right button')}
+                  rightTitle="Right"
+                />
+                <Scene
+                  key="tab1_2"
+                  component={BlankPage}
+                  title="Tab #1_2"
+                  titleStyle={{color: 'black'}}
+                />
+              </Scene>
+              <Scene key="tab2" initial title="Tab #2" icon={TabIcon}>
+                <Scene
+                  key="tab2_1"
+                  component={TabView}
+                  title="Tab #2_1"
+                  renderRightButton={() => <Text>Right</Text>}
+                />
+                <Scene
+                  key="tab2_2"
+                  component={TabView}
+                  title="Tab #2_2"
+                  hideBackImage
+                  onBack={() => alert('Left button!')}
+                  backTitle="Left"
+                  duration={1}
+                  panHandlers={null}
+                />
               </Scene>
             </Scene>
-
           </Scene>
-        </RouterWithRedux>
-      </Drawer>
+
+        </Scene>
+      </RouterWithRedux>
     );
   }
 }
 
-function bindAction(dispatch) {
+function bindAction (dispatch) {
   return {
     closeDrawer: () => dispatch(closeDrawer()),
   };
